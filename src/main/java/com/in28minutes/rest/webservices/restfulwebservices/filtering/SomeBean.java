@@ -1,41 +1,40 @@
 package com.in28minutes.rest.webservices.restfulwebservices.filtering;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFilter;
 
-@JsonIgnoreProperties({ "filed1", "filed2" })
+@JsonFilter("SomeBeanFilter")
 public class SomeBean {
-    String filed1;
+    String field1;
 
     //@JsonIgnore
-    String filed2;
-    String filed3;
+    String field2;
+    String field3;
 
     public SomeBean(String filed1, String filed2, String filed3) {
-        this.filed1 = filed1;
-        this.filed2 = filed2;
-        this.filed3 = filed3;
+        this.field1 = filed1;
+        this.field2 = filed2;
+        this.field3 = filed3;
     }
 
-    public String getFiled1() {
-        return filed1;
+    public String getField1() {
+        return field1;
     }
 
-    public String getFiled2() {
-        return filed2;
+    public String getField2() {
+        return field2;
     }
 
-    public String getFiled3() {
-        return filed3;
+    public String getField3() {
+        return field3;
     }
 
     @Override
     public String toString() {
         return "SomeBean{" +
-                "filed1='" + filed1 + '\'' +
-                ", filed2='" + filed2 + '\'' +
-                ", filed3='" + filed3 + '\'' +
+                "filed1='" + field1 + '\'' +
+                ", filed2='" + field2 + '\'' +
+                ", filed3='" + field3 + '\'' +
                 '}';
     }
 }
