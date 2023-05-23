@@ -74,13 +74,16 @@ public class UserJpaResource {
     }
 
     @PostMapping("/jpa/users/{id}/posts")
-    public List<Post> createUserPosts(@PathVariable int id, @Valid @RequestBody Post post) {
+    public ResponseEntity<Object> createUserPosts(@PathVariable int id, @Valid @RequestBody Post post) {
         Optional<User> user = repository.findById(id);
         if (user.isEmpty())
             throw new UserNotFoundException("id:" + id);
 
-        return user.get().getPosts();
+        post.setUser(user.get());
+        Post savedPost = postJpaRepository.save(post);
 
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(savedPost.getId()).toUri();
+        return ResponseEntity.created(location).build();
 
     }
 }
