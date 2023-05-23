@@ -73,8 +73,8 @@ public class UserJpaResource {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping("/jpa/users/{id}/posts")
-    public List<Post> getUserPosts(@PathVariable int id) {
+    @PostMapping("/jpa/users/{id}/posts")
+    public List<Post> createUserPosts(@PathVariable int id, @Valid @RequestBody Post post) {
         Optional<User> user = repository.findById(id);
         if (user.isEmpty())
             throw new UserNotFoundException("id:" + id);
