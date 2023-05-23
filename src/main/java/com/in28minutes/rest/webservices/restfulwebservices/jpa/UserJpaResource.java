@@ -1,7 +1,7 @@
 package com.in28minutes.rest.webservices.restfulwebservices.jpa;
 
+import com.in28minutes.rest.webservices.restfulwebservices.user.Post;
 import com.in28minutes.rest.webservices.restfulwebservices.user.User;
-import com.in28minutes.rest.webservices.restfulwebservices.user.UserDaoService;
 import com.in28minutes.rest.webservices.restfulwebservices.user.UserNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +22,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UserJpaResource {
     UserJpaRepository repository;
 
+    PostJpaRepository postJpaRepository;
+
     @Autowired
-    public UserJpaResource(UserJpaRepository repository) {
+    public UserJpaResource(UserJpaRepository repository, PostJpaRepository postJpaRepository) {
         this.repository = repository;
+        this.postJpaRepository = postJpaRepository;
     }
 
     @GetMapping("/jpa/users")
@@ -48,6 +51,18 @@ public class UserJpaResource {
         repository.deleteById(id);
     }
 
+    @GetMapping("/jpa/users/{id}/posts")
+    public List<Post> getUserPosts(@PathVariable int id) {
+        Optional<User> user = repository.findById(id);
+        if (user.isEmpty())
+            throw new UserNotFoundException("id:" + id);
+
+        return user.get().getPosts();
+
+
+    }
+
+
     @PostMapping("/jpa/users")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         repository.save(user);
@@ -56,5 +71,16 @@ public class UserJpaResource {
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("/jpa/users/{id}/posts")
+    public List<Post> getUserPosts(@PathVariable int id) {
+        Optional<User> user = repository.findById(id);
+        if (user.isEmpty())
+            throw new UserNotFoundException("id:" + id);
+
+        return user.get().getPosts();
+
+
     }
 }
