@@ -82,7 +82,7 @@ public class UserJpaResource {
         post.setUser(user.get());
         Post savedPost = postJpaRepository.save(post);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(savedPost.getId()).toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedPost.getId()).toUri();
         return ResponseEntity.created(location).build();
 
     }
