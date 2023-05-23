@@ -20,18 +20,20 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 public class UserJpaResource {
     UserDaoService service;
+    UserJpaRepository repository;
 
     @Autowired
-    public UserJpaResource(UserDaoService service) {
+    public UserJpaResource(UserDaoService service, UserJpaRepository repository) {
         this.service = service;
+        this.repository = repository;
     }
 
-    @GetMapping("/users")
+    @GetMapping("/jpa/users")
     public List<User> retrieveAllUsers() {
-        return service.allUsers();
+        return repository.findAll();
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/jpa/users/{id}")
     public EntityModel<User> retrieveUser(@PathVariable int id) {
         User user = service.user(id);
         if (user == null)
@@ -42,12 +44,12 @@ public class UserJpaResource {
         return entityModel;
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/jpa/users/{id}")
     public void deleteUser(@PathVariable int id) {
         service.deleteUserById(id);
     }
 
-    @PostMapping("/users")
+    @PostMapping("/jpa/users")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         service.saveUser(user);
 
