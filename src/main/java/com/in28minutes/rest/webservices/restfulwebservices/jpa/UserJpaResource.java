@@ -13,18 +13,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class UserJpaResource {
-    UserDaoService service;
     UserJpaRepository repository;
 
     @Autowired
-    public UserJpaResource(UserDaoService service, UserJpaRepository repository) {
-        this.service = service;
+    public UserJpaResource(UserJpaRepository repository) {
         this.repository = repository;
     }
 
@@ -35,10 +34,10 @@ public class UserJpaResource {
 
     @GetMapping("/jpa/users/{id}")
     public EntityModel<User> retrieveUser(@PathVariable int id) {
-        User user = service.user(id);
-        if (user == null)
+        Optional<User> user = repository.findById(id);
+        if (user.isEmpty())
             throw new UserNotFoundException("id:" + id);
-        EntityModel<User> entityModel = EntityModel.of(user);
+        EntityModel<User> entityModel = EntityModel.of(user.get());
         WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).retrieveAllUsers());
         entityModel.add(link.withRel("all_users"));
         return entityModel;
@@ -46,14 +45,14 @@ public class UserJpaResource {
 
     @DeleteMapping("/jpa/users/{id}")
     public void deleteUser(@PathVariable int id) {
-        service.deleteUserById(id);
+        repository.deleteById(id);
     }
 
     @PostMapping("/jpa/users")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        service.saveUser(user);
+        repository.save(user);
 
-        User savedUser = service.saveUser(user);
+        User savedUser = repository.save(user);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
 
         return ResponseEntity.created(location).build();

@@ -16,10 +16,10 @@ public class User {
     @GeneratedValue
     private Integer id;
     @Size(min = 2, message = "User name must be greater than 2 characters")
-    @JsonProperty("user_name")
+   // @JsonProperty("user_name")
     private String name;
     @Past(message = "Birth date must be in the past")
-    @JsonProperty("birth_date")
+    //@JsonProperty("birth_date")
     private LocalDate birthDate;
 
     public User(Integer id, String name, LocalDate birthDate) {
